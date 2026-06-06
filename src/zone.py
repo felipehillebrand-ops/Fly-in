@@ -8,6 +8,16 @@ class ZoneType(Enum):
     RESTRICTED = "restricted"
     PRIORITY = "priority"
 
+    def cost(self) -> int:
+        """Return the movement cost for this zone type."""
+        costs = {
+            ZoneType.NORMAL: 1,
+            ZoneType.PRIORITY: 1,
+            ZoneType.RESTRICTED: 2,
+            ZoneType.BLOCKED: 999,
+        }
+        return costs[self]
+
 
 class Zone:
     """Represents a zone (node) in the drone routing network."""

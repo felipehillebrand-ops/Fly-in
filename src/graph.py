@@ -14,6 +14,10 @@ class Graph:
 
     def add_zone(self, zone: Zone) -> None:
         """Add a zone to the graph."""
+        if self.get_zone(zone.name) is not None:
+            raise ValueError(
+                f"Duplicate zone name: '{zone.name}'"
+            )
         self.zones.append(zone)
 
     def add_connection(self, connection: Connection) -> None:

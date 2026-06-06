@@ -10,22 +10,35 @@ MYPY		= $(VENV)/bin/mypy
 MAP			?= maps/easy/01_linear_path.txt
  
 all: install
+
+$(VENV)/bin/python3:
+	@echo ">>> Virtual environment not found."
+	@echo ">>> Running installation..."
+	@$(MAKE) install
  
 install:
-	@echo ">>> Creating virtual environment..."
-	$(PYTHON) -m venv $(VENV)
+	@if [ ! -d "$(VENV)" ]; then \
+		echo ">>> Creating virtual environment..."; \
+		$(PYTHON) -m venv $(VENV); \
+	else \
+		echo ">>> Virtual environment already exists."; \
+	fi
 	@echo ">>> Installing dependencies..."
 	$(PIP) install --upgrade pip
 	$(PIP) install -r requirements.txt
 	@echo ">>> Installation complete."
  
-run:
+run: $(VENV)/bin/python3
 	@echo ">>> Running Fly-in simulation..."
-	$(VENV)/bin/python3 $(MAIN) $(MAP)
+	PYTHONPATH=. $(VENV)/bin/python3 $(MAIN) $(MAP)
+
+animate: $(VENV)/bin/python3
+	@echo ">>> Running Fly-in simulation with animation..."
+	PYTHONPATH=. $(VENV)/bin/python3 $(MAIN) $(MAP) --animate
  
-debug:
+debug: $(VENV)/bin/python3
 	@echo ">>> Running Fly-in simulation in debug mode..."
-	$(VENV)/bin/python3 -m pdb $(MAIN) $(MAP)
+	PYTHONPATH=. $(VENV)/bin/python3 -m pdb $(MAIN) $(MAP)
 
 clean:
 	@echo ">>> Cleaning temporary files..."
@@ -41,7 +54,7 @@ fclean: clean
 	rm -rf $(VENV)
 	@echo ">>> Full clean complete."
 
-lint:
+lint: $(VENV)/bin/python3
 	@echo ">>> Running flake8..."
 	$(FLAKE8) .
 	@echo ">>> Running mypy..."
@@ -53,16 +66,12 @@ lint:
 		--check-untyped-defs
 	@echo ">>> Lint complete."
  
-lint-strict:
+lint-strict: $(VENV)/bin/python3
 	@echo ">>> Running flake8 (strict)..."
 	$(FLAKE8) .
 	@echo ">>> Running mypy (strict)..."
 	$(MYPY) . --strict
 	@echo ">>> Strict lint complete."
- 
-test:
-	@echo ">>> Running tests..."
-	$(PYTEST) tests/ -v
 
 help:
 	@echo ""
@@ -70,16 +79,21 @@ help:
 	@echo ""
 	@echo "  Targets:"
 	@echo "    install      Install project dependencies into a virtual environment"
-	@echo "    run          Run the simulation  (pass MAP=<map_file> for a specific map)"
+	@echo "    run          Run the simulation (pass MAP=<map_file> for a specific map)"
+	@echo "    animate      Run the simulation with animation (pass MAP=<map_file> for a specific map)"
 	@echo "    debug        Run the simulation with Python's pdb debugger"
-	@echo "    clean        Remove __pycache__, .mypy_cache, .pytest_cache, *.pyc"
+	@echo "    clean        Remove __pycache__, .mypy_cache, .pytest_cache, *.pyc, *.pyo"
 	@echo "    fclean       clean + remove the virtual environment"
 	@echo "    lint         Run flake8 + mypy with mandatory flags"
 	@echo "    lint-strict  Run flake8 + mypy with --strict"
-	@echo "    test         Run unit tests with pytest"
 	@echo ""
 	@echo "  Example:"
-	@echo "    make run MAP=maps/easy_1.txt"
+	@echo "    make run MAP=maps/easy/01_linear_path.txt"
+	@echo "    make animate MAP=maps/easy/01_linear_path.txt"
+	@echo ""
+	@echo "  Virtual Environment:"
+	@echo "    To activate the virtual environment, run:"
+	@echo "        source $(VENV)/bin/activate"
 	@echo ""
 
-.PHONY: all install run debug clean fclean lint lint-strict test help
+.PHONY: all install run animate debug clean fclean lint lint-strict help

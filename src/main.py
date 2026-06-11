@@ -1,4 +1,5 @@
 import sys
+import traceback
 from src.parser import Parser
 from src.simulation import Simulation, SimulationDeadlockError
 from src.visualizer import Visualizer
@@ -37,6 +38,11 @@ def main() -> None:
     except (FileNotFoundError, SyntaxError, ValueError,
             SimulationDeadlockError) as e:
         print(f"Error: {e}")
+        sys.exit(1)
+    except Exception as e:
+        tb = traceback.extract_tb(e.__traceback__)
+        print(f"Failed on the function: {tb[-1].name}")
+        print(f"{type(e).__name__}: {e}")
         sys.exit(1)
 
 

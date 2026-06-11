@@ -33,7 +33,7 @@ class Graph:
 
     def get_neighbors(self, zone: Zone) -> list[Zone]:
         """Return all zones directly connected to the given zone."""
-        neighbors = []
+        neighbors: list[Zone] = []
         for connection in self.connections:
             if connection.connects(zone):
                 neighbor = connection.other(zone)

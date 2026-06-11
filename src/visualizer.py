@@ -48,7 +48,7 @@ class Visualizer:
     def __init__(self, graph: Graph) -> None:
         self.graph = graph
 
-    def print_turn(self, turn: int, moves: str) -> None:
+    def print_turn(self, _turn: int, moves: str) -> None:
         """Print a simulation turn with colors in the terminal."""
         print(f"{Style.RESET_ALL}", end="")
         parts = moves.split()

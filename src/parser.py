@@ -103,6 +103,14 @@ class Parser:
         x = int(match.group(3))
         y = int(match.group(4))
 
+        meta_match = re.search(r"\[(.+)\]", line)
+        end_pos = meta_match.start() if meta_match else len(line)
+        rest = line[match.end():end_pos]
+        if rest.strip():
+            raise SyntaxError(
+                f"Line {lineno}: invalid zone definition -> '{line}'"
+            )
+
         if "-" in name:
             raise SyntaxError(
                 f"Line {lineno}: zone name cannot contain dashes -> '{name}'"
@@ -160,13 +168,15 @@ class Parser:
         """Extract metadata from brackets and return as a dictionary."""
         metadata: dict[str, str] = {}
         match = re.search(r"\[(.+)\]", line)
+
         if not match:
             return metadata
+
         content = match.group(1).strip()
-        content = content.replace("zone restricted", "zone=restricted")
-        content = content.replace("zone priority", "zone=priority")
-        content = content.replace("zone normal", "zone=normal")
-        content = content.replace("zone blocked", "zone=blocked")
+        content = re.sub(r"zone\s+restricted", "zone=restricted", content)
+        content = re.sub(r"zone\s+priority", "zone=priority", content)
+        content = re.sub(r"zone\s+normal", "zone=normal", content)
+        content = re.sub(r"zone\s+blocked", "zone=blocked", content)
 
         for pair in content.split():
             if "=" not in pair:
@@ -195,8 +205,8 @@ class Parser:
             return capacity
         except ValueError:
             raise SyntaxError(
-                f"Line {lineno}: capacity must be a positive integer"
-                f" -> '{value}'"
+                f"Line {lineno}: capacity must be a positive integer "
+                f"and greater than zero -> '{value}'"
             )
 
     def _validate_graph(self, graph: Graph) -> None:

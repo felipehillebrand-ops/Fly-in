@@ -65,10 +65,10 @@ connection: corridorA-goal [max_link_capacity=2]
 ```
 
 Zone types:
-
+ 
 - `normal` — standard zone, 1 turn to enter (default)
 - `restricted` — sensitive zone, 2 turns to enter (drone occupies the connection during the first turn and must arrive on the second)
-- `priority` — preferred zone, 1 turn to enter, weighted lower in pathfinding so it is favoured over normal zones
+- `priority` — preferred zone, 1 turn to enter, same 1 turn cost as normal zones but preferred by the pathfinder when two routes tie
 - `blocked` — inaccessible, drones cannot enter or pass through
 
 ### Example input and expected output
@@ -99,13 +99,13 @@ Simulation complete!
 
 Each line is one simulation turn. `D<ID>-<zone>` means drone D\<ID\> moved to that zone. Drones that do not move in a given turn are omitted. When a drone moves toward a `restricted` zone, the format is `D<ID>-<zoneA>-<zoneB>` for the first turn (in transit) and `D<ID>-<zoneB>` for the arrival turn.
 
-## Algorithm
+## Algorithm Explanation
 
 ### Pathfinding — Dijkstra with iterative penalty diversification
 
 Implemented from scratch in `src/pathfinding.py`. No graph libraries are used.
 
-**Core algorithm:** Dijkstra's algorithm finds the shortest weighted path from the start zone to the end zone. Each zone has a movement weight based on its type: `priority` zones are weighted 0.5 (preferred), `normal` zones 1.0, `restricted` zones 2.0, and `blocked` zones are excluded entirely from the search.
+**Core algorithm:** Dijkstra's algorithm finds the shortest weighted path from the start zone to the end zone. Each zone has a movement weight based on its type: `normal` and `priority` zones both cost 1.0, `restricted` zones 2.0, and `blocked` zones are excluded entirely from the search. When two routes reach a neighbor with equal cost, `priority` zones are always preferred over `normal` zones via an explicit tiebreaker in node selection and path recording.
 
 **Path diversification:** To distribute drones across multiple routes and avoid bottlenecks, the algorithm is run iteratively up to `max_paths` times. After each path is found, a penalty of 1.5 is added to every intermediate zone on that path. This causes the next Dijkstra run to explore alternative routes. Up to 4 diverse paths are computed (2 for maps with 25+ drones to reduce initialization time), and drones are assigned to these paths in round-robin order.
 
@@ -189,7 +189,7 @@ This mode is the most useful for understanding how the algorithm distributes dro
 
 ### Use of AI
 
-AI (Claude by Anthropic and  Gemini by Google) was used during the development of this project for the following tasks:
+AI (Claude by Anthropic and Gemini by Google) was used during the development of this project for the following tasks:
 
 - Guidance on project structure and file organization
 - Explanation of Dijkstra's algorithm and its application to weighted graphs with penalty-based diversification

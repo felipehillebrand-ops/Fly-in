@@ -187,7 +187,7 @@ This mode is the most useful for understanding how the algorithm distributes dro
 - [pygame documentation](https://www.pygame.org/docs/)
 - [PEP 257 — Docstring Conventions](https://peps.python.org/pep-0257/)
 
-### Use of AI
+# Use of AI
 
 AI (Claude by Anthropic and Gemini by Google) was used during the development of this project for the following tasks:
 
@@ -201,7 +201,7 @@ AI (Claude by Anthropic and Gemini by Google) was used during the development of
 All generated code was reviewed, understood, tested, and adapted by the author before being included in the project. No code was blindly copied without understanding its purpose and behavior.
 
 
-### License
+# License
 
 This project was developed for educational purposes as part of the 42 curriculum.
 

@@ -201,12 +201,12 @@ AI (Claude by Anthropic and Gemini by Google) was used during the development of
 All generated code was reviewed, understood, tested, and adapted by the author before being included in the project. No code was blindly copied without understanding its purpose and behavior.
 
 
-# License
+## License
 
 This project was developed for educational purposes as part of the 42 curriculum.
 
 
-### Author
+## Author
 
 Felipe José Hillebrand
 

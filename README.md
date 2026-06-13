@@ -199,3 +199,15 @@ AI (Claude by Anthropic and Gemini by Google) was used during the development of
 - Code review for conformance with the project specification
 
 All generated code was reviewed, understood, tested, and adapted by the author before being included in the project. No code was blindly copied without understanding its purpose and behavior.
+
+
+### License
+
+This project was developed for educational purposes as part of the 42 curriculum.
+
+
+### Author
+
+Felipe José Hillebrand
+
+GitHub: https://github.com/felipehillebrand-ops
